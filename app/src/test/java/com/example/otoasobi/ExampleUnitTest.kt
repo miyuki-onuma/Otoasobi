@@ -1,4 +1,4 @@
-package com.example.otoasobi
+package com.myk.numa.otoasobi
 
 import org.junit.Test
 

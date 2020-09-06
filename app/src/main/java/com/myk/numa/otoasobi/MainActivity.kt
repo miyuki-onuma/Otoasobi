@@ -1,4 +1,4 @@
-package com.example.otoasobi
+package com.myk.numa.otoasobi
 
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
