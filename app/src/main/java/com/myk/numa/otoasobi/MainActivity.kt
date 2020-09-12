@@ -1,4 +1,4 @@
-package com.example.otoasobi
+package com.myk.numa.otoasobi
 
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -22,5 +22,18 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        for (fragment in supportFragmentManager.fragments) {
+            for(childFragment in fragment.childFragmentManager.fragments) {
+                childFragment.onRequestPermissionsResult(requestCode, permissions, grantResults)
+            }
+        }
     }
 }
