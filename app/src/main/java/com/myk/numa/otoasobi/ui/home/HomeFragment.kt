@@ -1,17 +1,22 @@
 package com.myk.numa.otoasobi.ui.home
 
 import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.myk.numa.otoasobi.R
 import com.myk.numa.otoasobi.databinding.FragmentHomeBinding
-import com.myk.numa.otoasobi.ui.recorder.MyAudioRecorder
+import com.myk.numa.otoasobi.player.MyAudioPlayer
+import com.myk.numa.otoasobi.recorder.Define
+import com.myk.numa.otoasobi.recorder.MyAudioRecorder
+import java.io.File
 
 class HomeFragment : Fragment() {
 
@@ -19,7 +24,9 @@ class HomeFragment : Fragment() {
     private val homeViewModel = HomeViewModel()
     private lateinit var binding: FragmentHomeBinding
     private lateinit var recorder: MyAudioRecorder
+    private lateinit var player: MyAudioPlayer
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,8 +49,9 @@ class HomeFragment : Fragment() {
             ),
             PERMISSION_REQUEST_CODE
         )
+        player = MyAudioPlayer()
         binding.playBtn.setOnClickListener {
-
+            player.play()
         }
         binding.startRecordBtn.setOnClickListener {
             if (recorder.isRecording()) {

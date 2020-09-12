@@ -1,9 +1,8 @@
-package com.myk.numa.otoasobi.ui.recorder
+package com.myk.numa.otoasobi.recorder
 
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
-import com.myk.numa.otoasobi.repository.AudioFile
 
 class MyAudioRecorder {
 
@@ -11,7 +10,6 @@ class MyAudioRecorder {
     private var recorder: AudioRecord
     private var status = Status.IS_READY
 
-    private val samplingRate = 44100
     private val samplingRateInHz = 4000
 
     enum class Status {
@@ -25,25 +23,25 @@ class MyAudioRecorder {
             samplingRateInHz,
             AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_16BIT,
-            samplingRate
+            Define.SAMPLING_RATE
         )
         audioFile = AudioFile()
 
+        val audioBuffer = ShortArray(Define.SAMPLING_RATE / 2)
         recorder.setRecordPositionUpdateListener(object : AudioRecord.OnRecordPositionUpdateListener {
             override fun onMarkerReached(audioRecord: AudioRecord) {
             }
 
             override fun onPeriodicNotification(audioRecord: AudioRecord) {
                 // 録音データ読み込み
-                val audioBuffer = ShortArray(samplingRate / 2)
                 // Short型Arrayにデータを読み込み
-                recorder.read(audioBuffer, 0, samplingRate / 2)
+                recorder.read(audioBuffer, 0, Define.SAMPLING_RATE / 2)
                 audioFile.writeByteToPcm(audioBuffer)
             }
 
         })
         // コールバック間隔を指定
-        recorder.positionNotificationPeriod = samplingRate / 2
+        recorder.positionNotificationPeriod = Define.SAMPLING_RATE / 2
     }
 
     fun isRecording() = status == Status.RECORDING
@@ -54,9 +52,9 @@ class MyAudioRecorder {
 
         Thread {
             // 録音データ読み込み
-            val audioBuffer = ShortArray(samplingRate / 2)
+            val audioBuffer = ShortArray(Define.SAMPLING_RATE / 2)
             // Short型Arrayにデータを読み込み
-            recorder.read(audioBuffer, 0, samplingRate / 2)
+            recorder.read(audioBuffer, 0, Define.SAMPLING_RATE / 2)
         }
     }
 

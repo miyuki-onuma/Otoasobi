@@ -1,4 +1,4 @@
-package com.myk.numa.otoasobi.repository
+package com.myk.numa.otoasobi.recorder
 
 import android.util.Log
 import java.io.*
@@ -8,8 +8,6 @@ class AudioFile {
     companion object {
         private const val FILESIZE_SEEK = 4L
         private const val DATASIZE_SEEK = 40L
-        private const val samplingRate = 44100
-        private const val filePath = "/sdcard/test.wav"
     }
 
     private lateinit var file: File
@@ -35,7 +33,7 @@ class AudioFile {
 
     private val chCount: Short = 1 //チャネルカウント モノラルなので1 ステレオなら2にする
 
-    private val bytePerSec = samplingRate * (fmtSize / 8) * chCount //データ速度
+    private val bytePerSec = Define.SAMPLING_RATE * (fmtSize / 8) * chCount //データ速度
 
     private val blockSize =
         (fmtSize / 8 * chCount).toShort() //ブロックサイズ (Byte/サンプリングレート * チャンネル数)
@@ -52,7 +50,7 @@ class AudioFile {
     }
 
     private fun createRecordingFile() {
-        file = File(filePath)
+        file = File(Define.FILEPATH)
         if (file.exists()) {
             file.delete()
         }
@@ -70,7 +68,7 @@ class AudioFile {
             randomAccessFile.write(littleEndianInteger(fmtSize))
             randomAccessFile.write(fmtID)
             randomAccessFile.write(littleEndianShort(chCount))
-            randomAccessFile.write(littleEndianInteger(samplingRate)) //サンプリング周波数
+            randomAccessFile.write(littleEndianInteger(Define.SAMPLING_RATE)) //サンプリング周波数
             randomAccessFile.write(littleEndianInteger(bytePerSec))
             randomAccessFile.write(littleEndianShort(blockSize))
             randomAccessFile.write(littleEndianShort(bitPerSample))
