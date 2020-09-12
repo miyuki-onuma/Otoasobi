@@ -23,4 +23,17 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        for (fragment in supportFragmentManager.fragments) {
+            for(childFragment in fragment.childFragmentManager.fragments) {
+                childFragment.onRequestPermissionsResult(requestCode, permissions, grantResults)
+            }
+        }
+    }
 }
