@@ -1,11 +1,11 @@
 package com.myk.numa.otoasobi.player
 
-import android.R.attr
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
 import android.media.AudioTrack.OnPlaybackPositionUpdateListener
 import android.os.Build
+import android.os.Process
 import androidx.annotation.RequiresApi
 import com.myk.numa.otoasobi.recorder.Define
 import java.io.File
@@ -30,7 +30,7 @@ class MyAudioPlayer {
             playStream = FileInputStream(file)
             for (i in 0..2) {
                 playStream.read(playByteData)
-//                byte2short(playShortData, playByteData)
+                byte2short(playShortData, playByteData)
                 audioTrack?.write(playShortData, 0, playByteData.size)
             }
 
@@ -43,15 +43,15 @@ class MyAudioPlayer {
     fun playInit() {
         val playBufSize = AudioTrack.getMinBufferSize(
             Define.SAMPLING_RATE,  //バッファサイズ
-            AudioFormat.CHANNEL_OUT_MONO,  //チャンネル
-            AudioFormat.ENCODING_PCM_16BIT) //エンコーディング形式 pcm16ビット
+            Define.CHANNEL_OUT,  //チャンネル
+            Define.ENCODE_FORMAT)
         audioTrack = AudioTrack.Builder()
             .setAudioAttributes(AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_ALARM)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build())
             .setAudioFormat(AudioFormat.Builder()
-                .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                .setEncoding(Define.ENCODE_FORMAT)
                 .setSampleRate(Define.SAMPLING_RATE)
                 .setChannelMask(AudioFormat.CHANNEL_OUT_STEREO)
                 .build())
@@ -67,7 +67,7 @@ class MyAudioPlayer {
                 try {
                     val endBuf = playStream.read(playByteData) //最後まで再生済みの場合−１になる
                     if (endBuf != -1) {
-//                        byte2short(playShortData, playByteData)
+                        byte2short(playShortData, playByteData)
                         audioTrack?.write(playShortData, 0, playByteData.size)
                     } else {
                         audioTrack?.stop()
