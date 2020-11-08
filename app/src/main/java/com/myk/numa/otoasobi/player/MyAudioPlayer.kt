@@ -1,90 +1,96 @@
 package com.myk.numa.otoasobi.player
 
-import android.media.AudioAttributes
-import android.media.AudioFormat
-import android.media.AudioTrack
-import android.media.AudioTrack.OnPlaybackPositionUpdateListener
-import android.os.Build
-import android.os.Process
-import androidx.annotation.RequiresApi
-import com.myk.numa.otoasobi.recorder.Define
-import java.io.File
-import java.io.FileInputStream
+import android.content.Context
+import android.net.Uri
+import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.analytics.AnalyticsListener
+import com.google.android.exoplayer2.audio.AudioListener
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.TrackGroupArray
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.video.VideoListener
+import com.myk.numa.otoasobi.recorder.Define.Companion.FILEPATH
 
-
-@RequiresApi(Build.VERSION_CODES.M)
 class MyAudioPlayer {
 
-    private var audioTrack: AudioTrack? = null
-    private val playByteData = ByteArray(4096)
-    private val playShortData = ShortArray(2048)
-    private lateinit var playStream: FileInputStream
+    private var player: SimpleExoPlayer? = null
 
-    fun play() = try {
-        if (audioTrack != null && audioTrack?.state == AudioTrack.PLAYSTATE_PLAYING) {
-            audioTrack?.stop()
-        } else {
-            playInit()
-            val file = File(Define.FILEPATH)
-
-            playStream = FileInputStream(file)
-            for (i in 0..2) {
-                playStream.read(playByteData)
-                byte2short(playShortData, playByteData)
-                audioTrack?.write(playShortData, 0, playByteData.size)
-            }
-
-            audioTrack?.play()
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
+    fun play(context: Context) {
+        val dataSourceFactory = DefaultDataSourceFactory(context)
+        val mediaItem = MediaItem.fromUri(Uri.parse(FILEPATH))
+        val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+            .createMediaSource(mediaItem)
+        player?.setAudioAttributes(com.google.android.exoplayer2.audio.AudioAttributes.DEFAULT, true)
+        player?.setMediaSource(mediaSource)
+        player?.prepare()
+        player?.play()
     }
 
-    fun playInit() {
-        val playBufSize = AudioTrack.getMinBufferSize(
-            Define.SAMPLING_RATE,  //バッファサイズ
-            Define.CHANNEL_OUT,  //チャンネル
-            Define.ENCODE_FORMAT)
-        audioTrack = AudioTrack.Builder()
-            .setAudioAttributes(AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_ALARM)
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build())
-            .setAudioFormat(AudioFormat.Builder()
-                .setEncoding(Define.ENCODE_FORMAT)
-                .setSampleRate(Define.SAMPLING_RATE)
-                .setChannelMask(AudioFormat.CHANNEL_OUT_STEREO)
-                .build())
-            .setBufferSizeInBytes(playBufSize)
-            .build()
-        audioTrack?.positionNotificationPeriod = Define.SAMPLING_RATE / 2
-        audioTrack?.setPlaybackPositionUpdateListener(object: OnPlaybackPositionUpdateListener {
-            override fun onMarkerReached(track: AudioTrack) {
-                audioTrack?.stop()
-            }
+    fun initializePlayer(context: Context) {
+        val player = SimpleExoPlayer.Builder(context).build()
 
-            override fun onPeriodicNotification(track: AudioTrack) {
-                try {
-                    val endBuf = playStream.read(playByteData) //最後まで再生済みの場合−１になる
-                    if (endBuf != -1) {
-                        byte2short(playShortData, playByteData)
-                        audioTrack?.write(playShortData, 0, playByteData.size)
-                    } else {
-                        audioTrack?.stop()
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+        player.addListener(object : Player.EventListener {
+
+            override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) = Unit
+
+            override fun onSeekProcessed() = Unit
+
+            override fun onTracksChanged(
+                trackGroups: TrackGroupArray,
+                trackSelections: TrackSelectionArray
+            ) = Unit
+
+            override fun onIsLoadingChanged(isLoading: Boolean) = Unit
+
+            override fun onPlayerError(error: ExoPlaybackException) = Unit
+
+            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) = Unit
+
+            override fun onLoadingChanged(isLoading: Boolean) = Unit
+
+            override fun onPositionDiscontinuity(reason: Int) = Unit
+
+            override fun onRepeatModeChanged(repeatMode: Int) = Unit
+
+            override fun onPlaybackStateChanged(state: Int) = Unit
+
+            override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) = Unit
+
+            override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) = Unit
+
+            override fun onTimelineChanged(timeline: Timeline, reason: Int) = Unit
+
+            override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) = Unit
+
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) = Unit
+
+            override fun onIsPlayingChanged(isPlaying: Boolean) = Unit
+
+            override fun onExperimentalOffloadSchedulingEnabledChanged(
+                offloadSchedulingEnabled: Boolean
+            ) = Unit
+
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) = Unit
 
         })
+
+        player.addAnalyticsListener(object : AnalyticsListener {})
+
+        player.addVideoListener(object : VideoListener {})
+
+        player.addAudioListener(object : AudioListener {})
+
+        player.addMetadataOutput { metadata -> }
+
+        player.addTextOutput { cue -> }
+
+        this.player = player
     }
 
-    //byteデータ列をshortのオーディオサンプル列に変換
-    fun byte2short(data: ShortArray, bdata: ByteArray){
-        for(i in 0 until bdata.size / 2) {
-            // リトルエンディアン
-            data[i] = (bdata[2 * i].toShort() + bdata[2 * i + 1].toShort() * 256).toShort()
-        }
+    fun release() {
+        player?.stop()
+        player?.release()
+        player = null
     }
 }

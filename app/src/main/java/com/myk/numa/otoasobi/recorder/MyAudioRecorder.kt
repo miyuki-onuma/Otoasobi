@@ -57,7 +57,6 @@ class MyAudioRecorder {
                 audioFile.writeByteToPcm(audioBuffer)
             }
             recorder.stop()
-            recorder.release()
         }
         recorderThread?.start()
     }

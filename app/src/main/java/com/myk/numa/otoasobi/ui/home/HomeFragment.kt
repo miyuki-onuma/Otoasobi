@@ -26,7 +26,6 @@ class HomeFragment : Fragment() {
     private lateinit var recorder: MyAudioRecorder
     private lateinit var player: MyAudioPlayer
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,7 +50,7 @@ class HomeFragment : Fragment() {
         )
         player = MyAudioPlayer()
         binding.playBtn.setOnClickListener {
-            player.play()
+            player.play(requireContext())
         }
         binding.startRecordBtn.setOnClickListener {
             if (recorder.isRecording()) {
@@ -64,6 +63,11 @@ class HomeFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        player.initializePlayer(requireContext())
     }
 
     override fun onRequestPermissionsResult(
@@ -79,5 +83,6 @@ class HomeFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         recorder.release()
+        player.release()
     }
 }
