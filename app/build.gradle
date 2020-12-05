@@ -59,6 +59,12 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-core:2.12.1"
     implementation "com.google.android.exoplayer:exoplayer-hls:2.12.1"
 
+    // koin
+    implementation "org.koin:koin-android:$koin"
+    implementation "org.koin:koin-android:$koin"
+    implementation "org.koin:koin-androidx-scope:$koin"
+    implementation "org.koin:koin-androidx-viewmodel:$koin"
+
     //Joda time
     implementation "net.danlew:android.joda:2.10.3"
 }
