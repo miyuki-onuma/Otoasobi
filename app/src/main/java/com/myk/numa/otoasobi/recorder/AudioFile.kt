@@ -1,7 +1,11 @@
 package com.myk.numa.otoasobi.recorder
 
+import android.content.Context
 import android.util.Log
+import com.myk.numa.otoasobi.util.parseRFC3339Date
 import java.io.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AudioFile {
 
@@ -10,7 +14,7 @@ class AudioFile {
         private const val DATASIZE_SEEK = 40L
     }
 
-    private lateinit var file: File
+    lateinit var file: File
     private lateinit var randomAccessFile: RandomAccessFile
 
     private val RIFF = byteArrayOf(
@@ -50,11 +54,8 @@ class AudioFile {
     }
 
     private fun createRecordingFile() {
-        file = File(Define.FILEPATH)
-        if (file.exists()) {
-            file.delete()
-        }
         try {
+            file = createNewEmptyFile()
             file.createNewFile()
             Log.e("AudioManager", "outputStream initialized")
             randomAccessFile = RandomAccessFile(file, "rw")
@@ -141,4 +142,13 @@ class AudioFile {
         e.printStackTrace()
     }
 
+    private fun createNewEmptyFile(): File {
+        return File(Define.FILEPATH, getFileName())
+    }
+
+    private fun getFileName(): String {
+        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        val date = df.format(Date())
+        return date.parseRFC3339Date().toString() + ".wav"
+    }
 }

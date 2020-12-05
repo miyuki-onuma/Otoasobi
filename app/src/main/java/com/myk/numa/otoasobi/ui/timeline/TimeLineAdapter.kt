@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.myk.numa.otoasobi.R
 import com.myk.numa.otoasobi.data.Voice
 import com.myk.numa.otoasobi.ui.core.BaseViewHolderBinding
+import kotlinx.android.synthetic.main.item_list.view.*
 
 class TimeLineAdapter(
     private val onClickItemTimeLineListener: ((voice: Voice) -> Unit)? = null
@@ -32,6 +33,13 @@ class TimeLineAdapter(
 
     override fun getItemCount(): Int = data.size
 
+    fun addAllData(newData: List<String>) {
+        data.clear()
+        data.addAll(newData.map { Voice(0, it, 0L, it, 0L) })
+
+        notifyDataSetChanged()
+    }
+
     fun addData(newData: Voice, clear: Boolean) {
         if (clear) data.clear()
         data.add(newData)
@@ -40,12 +48,16 @@ class TimeLineAdapter(
     }
 
     inner class ItemTimeLineViewHolder(
-        private val viewBinding: ViewDataBinding
-    ) : BaseViewHolderBinding<Voice>(viewBinding) {
+        private val binding: ViewDataBinding
+    ) : BaseViewHolderBinding<Voice>(binding) {
         override fun onBindView(data: Voice) {
-            viewBinding.root.setOnClickListener {
+            binding.apply {
+                root.setOnClickListener {
+                    onClickItemTimeLineListener?.invoke(data)
+                }
+                root.txt_name.text = data.name
+                executePendingBindings()
             }
-            viewBinding.executePendingBindings()
         }
     }
 

@@ -6,11 +6,12 @@ import android.os.Process
 import com.myk.numa.otoasobi.recorder.Define.Companion.CHANNEL_IN
 import com.myk.numa.otoasobi.recorder.Define.Companion.ENCODE_FORMAT
 import com.myk.numa.otoasobi.recorder.Define.Companion.SAMPLING_RATE
+import java.io.File
 
 class MyAudioRecorder {
 
     private var audioBuffer: ShortArray
-    private var audioFile: AudioFile
+    private lateinit var audioFile: AudioFile
     private var recorder: AudioRecord
     private var status = Status.IS_READY
     private var recorderThread: Thread? = null
@@ -31,7 +32,6 @@ class MyAudioRecorder {
             MediaRecorder.AudioSource.MIC, //通話マイクからの音声を録音
             SAMPLING_RATE, CHANNEL_IN, ENCODE_FORMAT, bufferSize
         )
-        audioFile = AudioFile()
 
         audioBuffer = ShortArray(bufferSize / 2)
         recorder.setRecordPositionUpdateListener(object :
@@ -48,6 +48,7 @@ class MyAudioRecorder {
 
     fun startRecord() {
         if (recorderThread != null) return
+        audioFile = AudioFile()
         status = Status.RECORDING
         recorder.startRecording()
         recorderThread = Thread {
@@ -61,9 +62,11 @@ class MyAudioRecorder {
         recorderThread?.start()
     }
 
-    fun stopRecord() {
+    fun stopRecord(result: (file: File) -> Unit) {
         status = Status.STOP
         recorderThread = null
+
+        result.invoke(audioFile.file)
     }
 
     fun release() {

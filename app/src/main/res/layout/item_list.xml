@@ -9,7 +9,7 @@
         <import type="android.view.View" />
 
         <variable
-            name="notice"
+            name="voice"
             type="com.myk.numa.otoasobi.data.Voice" />
     </data>
 
@@ -18,18 +18,25 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         tools:background="@color/cardview_dark_background"
-        android:padding="8dp"
         tools:ignore="SpUsage,UseCompoundDrawables">
 
         <ImageView
             android:id="@+id/imgPlay"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:layout_margin="8dp"
             android:contentDescription="@string/app_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_play" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_play" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/colorLightGray2"
+            tools:ignore="MissingConstraints" />
         <LinearLayout
             android:id="@+id/contentLayout"
             android:layout_width="0dp"
@@ -42,10 +49,11 @@
             app:layout_constraintTop_toTopOf="@+id/imgPlay">
 
             <TextView
-                android:id="@+id/content"
+                android:id="@+id/txt_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textColor="@color/colorWhite"
@@ -54,9 +62,10 @@
                 tools:text="すごいすごいサウンド" />
 
             <TextView
-                android:id="@+id/useDate"
+                android:id="@+id/duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/colorWhite"
                 android:textSize="11dp"
@@ -64,14 +73,15 @@
                 tools:text="12:34" />
 
             <TextView
-                android:id="@+id/limitText"
+                android:id="@+id/recordTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
                 android:textColor="@color/colorWhite"
                 android:textSize="11dp"
                 tools:text="2018/09/10" />
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

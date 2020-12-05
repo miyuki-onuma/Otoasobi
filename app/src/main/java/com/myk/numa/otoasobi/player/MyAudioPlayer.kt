@@ -10,15 +10,14 @@ import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.video.VideoListener
-import com.myk.numa.otoasobi.recorder.Define.Companion.FILEPATH
 
 class MyAudioPlayer {
 
     private var player: SimpleExoPlayer? = null
 
-    fun play(context: Context) {
+    fun play(context: Context, uriString: String) {
         val dataSourceFactory = DefaultDataSourceFactory(context)
-        val mediaItem = MediaItem.fromUri(Uri.parse(FILEPATH))
+        val mediaItem = MediaItem.fromUri(Uri.encode(uriString))
         val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
             .createMediaSource(mediaItem)
         player?.setAudioAttributes(com.google.android.exoplayer2.audio.AudioAttributes.DEFAULT, true)

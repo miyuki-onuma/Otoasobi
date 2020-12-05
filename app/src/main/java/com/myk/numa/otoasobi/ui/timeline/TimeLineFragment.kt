@@ -5,14 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.gson.ExclusionStrategy
+import com.google.gson.FieldAttributes
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.myk.numa.otoasobi.databinding.FragmentTimelineBinding
+import com.myk.numa.otoasobi.player.MyAudioPlayer
+import com.myk.numa.otoasobi.recorder.Define
+import com.myk.numa.otoasobi.ui.core.AppSharePreference
 
 class TimeLineFragment : Fragment() {
 
+    private var preferences: AppSharePreference? = null
+
+    private val player = MyAudioPlayer()
+
     private val adapter = TimeLineAdapter(
-        onClickItemTimeLineListener = {
+        onClickItemTimeLineListener = { voice ->
             context?.let {
-                // TODO
+                player.play(it, voice.path)
             }
         }
     )
@@ -28,8 +39,39 @@ class TimeLineFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        binding.list.adapter = adapter
-
         return binding.root
     }
+
+    override fun onStart() {
+        super.onStart()
+        player.initializePlayer(requireContext())
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        player.release()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.list.adapter = adapter
+        preferences = AppSharePreference(requireContext(), generateGson())
+        val list = preferences?.getStringList(Define.KEY_VOICE) ?: emptyList()
+        adapter.addAllData(list)
+    }
+    private fun generateGson(): Gson {
+        return GsonBuilder().addSerializationExclusionStrategy(object : ExclusionStrategy {
+
+            override fun shouldSkipClass(clazz: Class<*>): Boolean {
+                return false
+            }
+
+            override fun shouldSkipField(f: FieldAttributes?): Boolean {
+                return false
+            }
+        }).create()
+    }
+
+
 }
