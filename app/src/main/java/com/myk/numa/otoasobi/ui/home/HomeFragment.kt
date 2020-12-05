@@ -1,29 +1,25 @@
 package com.myk.numa.otoasobi.ui.home
 
 import android.Manifest
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.myk.numa.otoasobi.R
 import com.myk.numa.otoasobi.databinding.FragmentHomeBinding
 import com.myk.numa.otoasobi.player.MyAudioPlayer
-import com.myk.numa.otoasobi.recorder.Define
 import com.myk.numa.otoasobi.recorder.MyAudioRecorder
-import java.io.File
 
 class HomeFragment : Fragment() {
 
     private val PERMISSION_REQUEST_CODE = 0
     private val homeViewModel = HomeViewModel()
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var recorder: MyAudioRecorder
+    private var recorder: MyAudioRecorder? = null
     private lateinit var player: MyAudioPlayer
 
     override fun onCreateView(
@@ -53,12 +49,13 @@ class HomeFragment : Fragment() {
             player.play(requireContext())
         }
         binding.startRecordBtn.setOnClickListener {
-            if (recorder.isRecording()) {
+            if (recorder == null) return@setOnClickListener
+            if (recorder!!.isRecording()) {
                 Toast.makeText(activity, R.string.stop_record, Toast.LENGTH_SHORT).show()
-                recorder.stopRecord()
+                recorder?.stopRecord()
             } else {
                 Toast.makeText(activity, R.string.start_record, Toast.LENGTH_SHORT).show()
-                recorder.startRecord()
+                recorder?.startRecord()
             }
         }
 
@@ -82,7 +79,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        recorder.release()
+        recorder?.release()
         player.release()
     }
 }
