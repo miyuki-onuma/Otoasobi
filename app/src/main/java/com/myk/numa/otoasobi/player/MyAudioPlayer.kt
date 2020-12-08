@@ -5,13 +5,16 @@ import android.net.Uri
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioListener
+import com.google.android.exoplayer2.audio.TeeAudioProcessor
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.video.VideoListener
+import com.myk.numa.otoasobi.CustomRenderersFactory
+import java.nio.ByteBuffer
 
-class MyAudioPlayer {
+class MyAudioPlayer: TeeAudioProcessor.AudioBufferSink {
 
     private var player: SimpleExoPlayer? = null
 
@@ -27,7 +30,7 @@ class MyAudioPlayer {
     }
 
     fun initializePlayer(context: Context) {
-        val player = SimpleExoPlayer.Builder(context).build()
+        val player = SimpleExoPlayer.Builder(context, CustomRenderersFactory(context, this)).build()
 
         player.addListener(object : Player.EventListener {
 
@@ -91,5 +94,13 @@ class MyAudioPlayer {
         player?.stop()
         player?.release()
         player = null
+    }
+
+    override fun flush(sampleRateHz: Int, channelCount: Int, encoding: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun handleBuffer(buffer: ByteBuffer) {
+        TODO("Not yet implemented")
     }
 }
