@@ -64,7 +64,8 @@ class HomeFragment : Fragment(), KoinComponent {
                     homeViewModel.saveVoice(it.path)
                     latestPath = it.path
                     playBtn.isEnabled = true
-                    DialogUtils.dialogShowMessage(requireContext(),
+                    DialogUtils.dialogShowMessage(
+                        requireContext(),
                         message = getString(R.string.stop_record),
                         textPositive = getString(R.string.ok)
                     )
