@@ -44,7 +44,7 @@
             android:layout_marginStart="14dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="@+id/imgPlay"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn"
             app:layout_constraintStart_toEndOf="@id/imgPlay"
             app:layout_constraintTop_toTopOf="@+id/imgPlay">
 
@@ -83,5 +83,13 @@
                 android:textSize="11dp"
                 tools:text="2018/09/10" />
         </LinearLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/contentLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="ffmpeg"
+            tools:ignore="MissingConstraints" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -11,7 +11,8 @@ import com.myk.numa.otoasobi.ui.core.BaseViewHolderBinding
 import kotlinx.android.synthetic.main.item_list.view.*
 
 class TimeLineAdapter(
-    private val onClickItemTimeLineListener: ((voice: Voice) -> Unit)? = null
+    private val onClickItemTimeLineListener: ((voice: Voice) -> Unit)? = null,
+    private val onClickFfmpegListener: ((voice: Voice) -> Unit)? = null
 ): RecyclerView.Adapter<TimeLineAdapter.ItemTimeLineViewHolder>() {
 
     val data: MutableList<Voice> = mutableListOf()
@@ -52,10 +53,13 @@ class TimeLineAdapter(
     ) : BaseViewHolderBinding<Voice>(binding) {
         override fun onBindView(data: Voice) {
             binding.apply {
-                root.setOnClickListener {
+                root.imgPlay.setOnClickListener {
                     onClickItemTimeLineListener?.invoke(data)
                 }
                 root.txt_name.text = data.name
+                root.btn.setOnClickListener {
+                    onClickFfmpegListener?.invoke(data)
+                }
                 executePendingBindings()
             }
         }

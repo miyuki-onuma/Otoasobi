@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.arthenica.mobileffmpeg.FFmpeg
+import com.myk.numa.otoasobi.data.Voice
 import com.myk.numa.otoasobi.databinding.FragmentTimelineBinding
 import com.myk.numa.otoasobi.player.MyAudioPlayer
 import com.myk.numa.otoasobi.recorder.Define
@@ -19,6 +21,9 @@ class TimeLineFragment : Fragment(), KoinComponent {
             context?.let {
                 player.play(it, voice.path)
             }
+        },
+        onClickFfmpegListener = { voice ->
+            logFfmpeg(voice)
         }
     )
     private val viewModel: TimeLineViewModel by sharedViewModel()
@@ -53,6 +58,27 @@ class TimeLineFragment : Fragment(), KoinComponent {
 
         val list = viewModel.getVoiceList()
         adapter.addAllData(list)
+    }
+
+
+    private fun logFfmpeg(voice: Voice) {
+        val filename = voice.path
+
+        FFmpeg.execute("-i $filename -af volumedetect -f null NULL")
+        val rc = FFmpeg.getLastReturnCode()
+        val output = FFmpeg.getLastCommandOutput()
+
+        when (rc) {
+            FFmpeg.RETURN_CODE_SUCCESS -> {
+                binding.text.text = "FFmpeg Success!\n $output"
+            }
+            FFmpeg.RETURN_CODE_CANCEL -> {
+                binding.text.text = "FFmpeg Cancel\n $output"
+            }
+            else -> {
+                binding.text.text = "FFmpeg Error\n $output"
+            }
+        }
     }
 
 }

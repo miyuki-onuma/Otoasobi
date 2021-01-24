@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.myk.numa.otoasobi"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -67,4 +67,7 @@ dependencies {
 
     //Joda time
     implementation "net.danlew:android.joda:2.10.3"
+
+    // ffmpeg
+    implementation 'com.arthenica:mobile-ffmpeg-full:4.2.2'
 }
