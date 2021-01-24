@@ -57,7 +57,7 @@ class TimeLineAdapter(
                     onClickItemTimeLineListener?.invoke(data)
                 }
                 root.txt_name.text = data.name
-                root.btn.setOnClickListener {
+                root.volumedetect.setOnClickListener {
                     onClickFfmpegListener?.invoke(data)
                 }
                 executePendingBindings()

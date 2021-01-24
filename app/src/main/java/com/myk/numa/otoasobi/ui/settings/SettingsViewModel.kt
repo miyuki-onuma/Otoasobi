@@ -1,4 +1,4 @@
-package com.myk.numa.otoasobi.ui.timeline
+package com.myk.numa.otoasobi.ui.settings
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,20 +8,16 @@ import com.myk.numa.otoasobi.ui.core.AppSharePreference
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class TimeLineViewModel : ViewModel(), KoinComponent {
+class SettingsViewModel : ViewModel(), KoinComponent {
 
     private val preferences: AppSharePreference by inject()
 
-    fun getVoiceList() : List<String> {
-        return preferences.getStringList(Define.KEY_VOICE) ?: emptyList()
-    }
-
-    fun setCurrentVoice(path: String) {
-        preferences.put(Define.KEY_CURRENT_VOICE, path)
+    fun getCurrent() : String? {
+        return preferences[Define.KEY_CURRENT_VOICE, String::class.java]
     }
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
+        value = "This is Settings Fragment"
     }
     val text: LiveData<String> = _text
 }

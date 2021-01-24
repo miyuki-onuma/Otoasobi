@@ -9,7 +9,6 @@ import com.arthenica.mobileffmpeg.FFmpeg
 import com.myk.numa.otoasobi.data.Voice
 import com.myk.numa.otoasobi.databinding.FragmentTimelineBinding
 import com.myk.numa.otoasobi.player.MyAudioPlayer
-import com.myk.numa.otoasobi.recorder.Define
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 
@@ -63,6 +62,7 @@ class TimeLineFragment : Fragment(), KoinComponent {
 
     private fun logFfmpeg(voice: Voice) {
         val filename = voice.path
+        viewModel.setCurrentVoice(voice.path)
 
         FFmpeg.execute("-i $filename -af volumedetect -f null NULL")
         val rc = FFmpeg.getLastReturnCode()
