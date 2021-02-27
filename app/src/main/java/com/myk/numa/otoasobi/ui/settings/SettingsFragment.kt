@@ -47,8 +47,8 @@ class SettingsFragment : Fragment(), KoinComponent {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         player.initializePlayer(requireContext())
     }
 
