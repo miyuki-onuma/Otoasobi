@@ -2,10 +2,14 @@ package com.myk.numa.otoasobi.player
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioListener
-import com.google.android.exoplayer2.audio.TeeAudioProcessor
+import com.google.android.exoplayer2.audio.TeeAudioProcessor.AudioBufferSink
+import com.google.android.exoplayer2.source.MediaLoadData
+import com.google.android.exoplayer2.source.MediaSource.MediaPeriodId
+import com.google.android.exoplayer2.source.MediaSourceEventListener
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
@@ -14,23 +18,54 @@ import com.google.android.exoplayer2.video.VideoListener
 import com.myk.numa.otoasobi.CustomRenderersFactory
 import java.nio.ByteBuffer
 
-class MyAudioPlayer: TeeAudioProcessor.AudioBufferSink {
+class MyAudioPlayer: MediaSourceEventListener {
 
     private var player: SimpleExoPlayer? = null
+    val audioDataReceiver = AudioDataReceiver()
+    var audioDataFetch: AudioDataFetch? = null
+    var sampleRate = 0
+    var channels = 0
+    init {
+        this@MyAudioPlayer.audioDataFetch = audioDataReceiver
+    }
 
     fun play(context: Context, uriString: String) {
         val dataSourceFactory = DefaultDataSourceFactory(context)
         val mediaItem = MediaItem.fromUri(Uri.encode(uriString))
         val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
             .createMediaSource(mediaItem)
-        player?.setAudioAttributes(com.google.android.exoplayer2.audio.AudioAttributes.DEFAULT, true)
+        player?.setAudioAttributes(
+            com.google.android.exoplayer2.audio.AudioAttributes.DEFAULT,
+            true
+        )
         player?.setMediaSource(mediaSource)
         player?.prepare()
         player?.play()
     }
 
     fun initializePlayer(context: Context) {
-        val player = SimpleExoPlayer.Builder(context, CustomRenderersFactory(context, this)).build()
+        val rendererFactory = CustomRenderersFactory(context, object : AudioBufferSink {
+            var counter = 0
+            override fun flush(sampleRateHz: Int, channelCount: Int, encoding: Int) {
+                // nothing to do here
+            }
+
+            override fun handleBuffer(buffer: ByteBuffer) {
+                counter++
+                if (!audioDataReceiver.isLocked()) {
+                    audioDataReceiver.setLocked(true)
+                    this@MyAudioPlayer.audioDataFetch?.setAudioDataAsByteBuffer(
+                        buffer.duplicate(),
+                        this@MyAudioPlayer.sampleRate,
+                        this@MyAudioPlayer.channels
+                    )
+                    Log.d("main_Activity", "sampleRate: $sampleRate channels: $channels")
+                } else {
+                    Log.d("main_Activity", "handleBuffer: skipped no$counter")
+                }
+            }
+        })
+        val player = SimpleExoPlayer.Builder(context, rendererFactory).build()
 
         player.addListener(object : Player.EventListener {
 
@@ -96,11 +131,18 @@ class MyAudioPlayer: TeeAudioProcessor.AudioBufferSink {
         player = null
     }
 
-    override fun flush(sampleRateHz: Int, channelCount: Int, encoding: Int) {
-        TODO("Not yet implemented")
+    override fun onDownstreamFormatChanged(
+        windowIndex: Int,
+        mediaPeriodId: MediaPeriodId?,
+        mediaLoadData: MediaLoadData
+    ) {
+        if (mediaLoadData.trackType == C.TRACK_TYPE_AUDIO) {
+            channels = mediaLoadData.trackFormat!!.channelCount
+            sampleRate = mediaLoadData.trackFormat!!.sampleRate
+        }
     }
 
-    override fun handleBuffer(buffer: ByteBuffer) {
-        TODO("Not yet implemented")
+    interface AudioDataFetch {
+        fun setAudioDataAsByteBuffer(buffer: ByteBuffer?, sampleRate: Int, channelCount: Int)
     }
 }

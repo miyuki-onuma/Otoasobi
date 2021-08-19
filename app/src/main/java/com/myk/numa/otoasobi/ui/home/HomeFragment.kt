@@ -64,7 +64,8 @@ class HomeFragment : Fragment(), KoinComponent {
                     homeViewModel.saveVoice(it.path)
                     latestPath = it.path
                     playBtn.isEnabled = true
-                    DialogUtils.dialogShowMessage(requireContext(),
+                    DialogUtils.dialogShowMessage(
+                        requireContext(),
                         message = getString(R.string.stop_record),
                         textPositive = getString(R.string.ok)
                     )
@@ -78,8 +79,8 @@ class HomeFragment : Fragment(), KoinComponent {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         player.initializePlayer(requireContext())
     }
 
@@ -96,6 +97,6 @@ class HomeFragment : Fragment(), KoinComponent {
     override fun onDestroy() {
         super.onDestroy()
         recorder?.release()
-        player.release()
+        if (::player.isInitialized) player.release()
     }
 }

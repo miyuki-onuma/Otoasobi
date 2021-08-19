@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder
 import com.myk.numa.otoasobi.Application
 import com.myk.numa.otoasobi.ui.core.AppSharePreference
 import com.myk.numa.otoasobi.ui.home.HomeViewModel
+import com.myk.numa.otoasobi.ui.settings.SettingsViewModel
 import com.myk.numa.otoasobi.ui.timeline.TimeLineViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -21,6 +22,10 @@ val viewModelModule = module {
 
     viewModel {
         TimeLineViewModel()
+    }
+
+    viewModel {
+        SettingsViewModel()
     }
 }
 

@@ -5,26 +5,303 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.myk.numa.otoasobi.ui.settings.SettingsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.notifications.SettingsFragment">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/text_notifications"
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/outputGain"
+            android:id="@+id/scrollLog"
+            tools:ignore="MissingConstraints">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:context=".ui.settings.SettingsFragment"
+                tools:ignore="MissingConstraints">
+
+                <TextView
+                    android:id="@+id/text_settings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:id="@+id/txt_gain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_settings"
+                    android:text="Gain調整"
+                    android:gravity="center_horizontal" />
+                <TextView
+                    android:id="@+id/gain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toEndOf="@id/txt_gain"
+                    app:layout_constraintTop_toTopOf="@id/txt_gain"
+                    android:gravity="center_horizontal" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/plus_gain"
+                    app:layout_constraintEnd_toStartOf="@id/minus_gain"
+                    app:layout_constraintTop_toTopOf="@id/txt_gain"
+                    android:text="+" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/minus_gain"
+                    android:text="-"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/plus_gain" />
+                <TextView
+                    android:id="@+id/txt_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@id/txt_gain"
+                    app:layout_constraintTop_toBottomOf="@id/txt_gain"
+                    android:text="フィルター"
+                    android:gravity="center_horizontal" />
+                <TextView
+                    android:id="@+id/title_highpass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="10dp"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="@id/txt_filter"
+                    app:layout_constraintTop_toBottomOf="@id/txt_filter"
+                    android:text="highpass"
+                    android:gravity="center_horizontal" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/highpassPlus"
+                    app:layout_constraintTop_toTopOf="@id/title_highpass"
+                    app:layout_constraintEnd_toStartOf="@id/highpassMinus"
+                    android:text="+" />
+                <TextView
+                    android:id="@+id/txtHighpass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintTop_toTopOf="@id/title_highpass"
+                    app:layout_constraintEnd_toStartOf="@id/highpassPlus"
+                    />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/highpassMinus"
+                    android:text="-"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/title_highpass" />
+                <TextView
+                    android:id="@+id/title_lowpass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="20sp"
+                    android:text="lowpass"
+                    app:layout_constraintTop_toBottomOf="@id/highpassPlus"
+                    app:layout_constraintStart_toStartOf="@id/title_highpass"
+                    />
+                <TextView
+                    android:id="@+id/txtLowpass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintTop_toTopOf="@id/title_lowpass"
+                    app:layout_constraintEnd_toStartOf="@id/lowpassPlus"
+                    />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lowpassPlus"
+                    app:layout_constraintTop_toTopOf="@id/title_lowpass"
+                    app:layout_constraintEnd_toStartOf="@id/highpassMinus"
+                    android:text="+" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lowpassMinus"
+                    android:text="-"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/title_lowpass" />
+
+
+                <TextView
+                    android:id="@+id/complesser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="@id/txt_gain"
+                    app:layout_constraintTop_toBottomOf="@id/title_lowpass"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:text="コンプレッサー default: attack = 5ms, release = 100ms"/>
+                <TextView
+                    android:id="@+id/title_threshold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintStart_toStartOf="@id/complesser"
+                    app:layout_constraintTop_toBottomOf="@id/complesser"
+                    android:text="threshold(dB)" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/threshold"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintStart_toEndOf="@id/title_threshold"
+                    app:layout_constraintTop_toBottomOf="@id/complesser"
+                    android:text="-20" />
+                <com.google.android.material.slider.RangeSlider
+                    android:id="@+id/sl_threshold"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/threshold"
+                    android:stepSize="5.0"
+                    android:valueFrom="-50.0"
+                    android:valueTo="0"
+                    />
+                <TextView
+                    android:id="@+id/title_ratio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintStart_toStartOf="@id/complesser"
+                    app:layout_constraintTop_toBottomOf="@id/sl_threshold"
+                    android:text="Ratio(1:N)" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ratio"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintStart_toEndOf="@id/title_threshold"
+                    app:layout_constraintTop_toBottomOf="@id/sl_threshold"
+                    android:text="8" />
+
+                <com.google.android.material.slider.RangeSlider
+                    android:id="@+id/sl_ratio"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/ratio"
+                    android:stepSize="0.5"
+                    android:valueFrom="1.0"
+                    android:valueTo="30.0"
+                    />
+                <TextView
+                    android:id="@+id/title_makeup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintStart_toStartOf="@id/complesser"
+                    app:layout_constraintTop_toBottomOf="@id/sl_ratio"
+                    android:text="makeup(dB)" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/makeup"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintStart_toEndOf="@id/title_threshold"
+                    app:layout_constraintTop_toBottomOf="@id/sl_ratio"
+                    android:text="3" />
+                <com.google.android.material.slider.RangeSlider
+                    android:id="@+id/sl_makeup"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/makeup"
+                    android:stepSize="5.0"
+                    android:valueFrom="-20.0"
+                    android:valueTo="50.0"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/outputGain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:textAlignment="center"
-            android:textSize="20sp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@id/outputFilter"
+            android:text="Gain"
+            tools:ignore="MissingConstraints" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/outputFilter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@id/outputCompressor"
+            android:text="Filter"
+            tools:ignore="MissingConstraints" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/outputCompressor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@id/play"
+            android:text="compressor"
+            tools:ignore="MissingConstraints" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/play"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:gravity="center_horizontal" />
+            android:text="play"
+            tools:ignore="MissingConstraints" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </layout>
