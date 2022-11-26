@@ -20,7 +20,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import java.io.File
 
-class HomeFragment : Fragment(), KoinComponent {
+class DesignSystemFragment : Fragment(), KoinComponent {
 
     private val PERMISSION_REQUEST_CODE = 0
     private val homeViewModel: HomeViewModel by sharedViewModel()
